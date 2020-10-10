@@ -1,0 +1,16 @@
+version: '3'
+services:
+    hackout_bot:
+        container_name: hackout_bot
+        build: .
+        depends_on:
+            - hackout_mongo
+        restart: always
+        env_file: ./.env
+    hackout_mongo:
+        container_name: hackout_mongo
+        image: mongo
+        ports:
+            - '27017:27017'
+        restart: always
+        env_file: ./.env
