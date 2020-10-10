@@ -1,0 +1,6 @@
+root = true
+
+# Show indentation with 4 tabs
+[*.{less,css,scss,sass,html,js,jsx,ts,tsx}]
+inden_style = tab
+indent_size = 4
