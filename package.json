@@ -1,0 +1,9 @@
+{
+  "name": "hackout-bot",
+  "version": "0.0.1",
+  "description": "A discord bot for Hackout - Headout's premier hackathon",
+  "main": "index.js",
+  "author": "Neil Agarwal",
+  "license": "MIT",
+  "private": true
+}
