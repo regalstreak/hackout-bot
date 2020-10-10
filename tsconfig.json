@@ -3,8 +3,7 @@
 		"module": "commonjs",
 		"target": "es2018",
 		"sourceMap": true,
-		"outDir": "dist",
-		"baseUrl": "."
+		"outDir": "dist"
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules"]
