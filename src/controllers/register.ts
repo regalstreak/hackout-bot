@@ -34,7 +34,7 @@ const register = async (msg: Message): Promise<void> => {
 	try {
 		const email: string = extractEmail(message)[0].email;
 		const name: string = message.replace(email, '').trim();
-		console.log(msg.author.id, msg.author.username);
+		console.log('REGISTER: ' + msg.author.id, msg.author.username);
 
 		try {
 			const createdHacker = await createHackerIfNotExists({
@@ -47,12 +47,12 @@ const register = async (msg: Message): Promise<void> => {
 			if (!!createdHacker.alreadyExists) {
 				const alreadyRegisteredReply = await msg.reply(
 					formatCreatedReply(
-						REPLIES.ALREADY_EXISTS,
+						REPLIES.REGISTER_ALREADY_EXISTS,
 						createdHacker.record.discordFullName,
 						createdHacker.record.email,
 					),
 				);
-				alreadyRegisteredReply.delete({ timeout: REPLIES.TIMEOUT });
+				alreadyRegisteredReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
 			} else {
 				const registerSuccessReply = await msg.reply(
 					formatCreatedReply(
@@ -61,7 +61,7 @@ const register = async (msg: Message): Promise<void> => {
 						createdHacker.record.email,
 					),
 				);
-				registerSuccessReply.delete({ timeout: REPLIES.TIMEOUT });
+				registerSuccessReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
 			}
 		} catch (error) {
 			console.log('Something wrong in database');
@@ -70,7 +70,7 @@ const register = async (msg: Message): Promise<void> => {
 		// email not found
 		console.log(error);
 		const wrongEmailReply = await msg.reply(REPLIES.WRONG_EMAIL);
-		wrongEmailReply.delete({ timeout: REPLIES.TIMEOUT });
+		wrongEmailReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
 	}
 
 	msg.delete();

@@ -4,6 +4,7 @@ import 'dotenv/config.js';
 import { Client as DiscordClient, Message, TextChannel, NewsChannel } from 'discord.js';
 import { PREFIX, COMMANDS } from './constants/message';
 import { connect as mongooseConnect, connection as mongooseConnection } from 'mongoose';
+import unregister from './controllers/unregister';
 
 const discordClient = new DiscordClient();
 
@@ -32,6 +33,13 @@ discordClient.on('message', (msg: Message) => {
 		switch (command) {
 			case COMMANDS.REGISTER: {
 				register(msg);
+				break;
+			}
+			case COMMANDS.UNREGISTER: {
+				unregister(msg);
+				break;
+			}
+			case COMMANDS.HELP: {
 				break;
 			}
 			default:
