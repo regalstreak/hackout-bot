@@ -3,6 +3,7 @@ import { getRoleByName } from './../utils/roles';
 import Hacker, { IHacker, IHackerDocument } from './../models/hacker';
 import { REPLIES, MESSAGE_DELETE_TIMEOUT } from '../constants/constants';
 import { Message } from 'discord.js';
+import UnregisteredHacker from '../models/unregisteredHacker';
 
 type TDeleteHacker = {
 	deletedRecord?: IHackerDocument;
@@ -14,6 +15,12 @@ const deleteHackerIfExists = async (discordId: IHacker['discordId']): Promise<TD
 		const discordIdRecord = await Hacker.findOne({ discordId });
 
 		if (discordIdRecord) {
+			try {
+				await UnregisteredHacker.create(discordIdRecord.toObject());
+			} catch (error) {
+				console.log(error);
+				console.log('Unable to copy unregistered hacker');
+			}
 			const deletedRecord = await discordIdRecord.deleteOne();
 			return { deletedRecord, deleted: true };
 		} else {

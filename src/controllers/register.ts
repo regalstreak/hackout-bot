@@ -10,7 +10,7 @@ type TCreateHacker = {
 	alreadyExists: boolean;
 };
 
-const createHackerIfNotExists = async (hacker: IHacker): Promise<TCreateHacker> => {
+export const createHackerIfNotExists = async (hacker: IHacker): Promise<TCreateHacker> => {
 	try {
 		const discordIdRecord = await Hacker.findOne({ discordId: hacker.discordId });
 		const discordEmailRecord = await Hacker.findOne({ email: hacker.email });

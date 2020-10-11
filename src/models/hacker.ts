@@ -6,7 +6,6 @@ export interface IHacker {
 	discordUserName: string;
 	discordFullName: string;
 
-	discordRole?: string;
 	accepted?: boolean;
 
 	devfolioFirstName?: string;
@@ -19,39 +18,49 @@ export interface IHacker {
 
 export interface IHackerDocument extends IHacker, Document {}
 
-const HackerSchema: Schema = new Schema(
-	{
-		email: {
-			type: String,
-			required: true,
-			unique: true,
-		},
-		discordId: {
-			type: String,
-			required: true,
-			unique: true,
-		},
-		discordUserName: {
-			type: String,
-			required: true,
-		},
-		discordFullName: {
-			type: String,
-			required: true,
-		},
-		discordRole: String,
+export const getHackerSchema = ({ collection }: { collection: string }): Schema => {
+	return new Schema(
+		{
+			email: {
+				type: String,
+				required: true,
+				unique: true,
+			},
+			discordId: {
+				type: String,
+				required: true,
+				unique: true,
+			},
+			discordUserName: {
+				type: String,
+				required: true,
+			},
+			discordFullName: {
+				type: String,
+				required: true,
+			},
 
-		accepted: Boolean,
-		devfolioFirstName: String,
-		devfolioLastName: String,
-		devfolioTShirtSize: String,
-		devfolioGender: String,
-		devfolioCollege: String,
-		devfolioTeamName: String,
-	},
-	{
+			accepted: {
+				type: Boolean,
+				default: false,
+			},
+
+			devfolioFirstName: String,
+			devfolioLastName: String,
+			devfolioTShirtSize: String,
+			devfolioGender: String,
+			devfolioCollege: String,
+			devfolioTeamName: String,
+		},
+		{
+			collection,
+		},
+	);
+};
+
+export default model<IHackerDocument>(
+	'Hacker',
+	getHackerSchema({
 		collection: 'hackers',
-	},
+	}),
 );
-
-export default model<IHackerDocument>('Hacker', HackerSchema);
