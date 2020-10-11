@@ -1,16 +1,29 @@
 import register from './controllers/register';
 import { getCommand, isAllowedChannel } from './utils/message';
 import 'dotenv/config.js';
-import { Client, Message, TextChannel, NewsChannel } from 'discord.js';
+import { Client as DiscordClient, Message, TextChannel, NewsChannel } from 'discord.js';
 import { PREFIX, COMMANDS } from './constants/message';
+import { connect as mongooseConnect, connection as mongooseConnection } from 'mongoose';
 
-const client = new Client();
+const discordClient = new DiscordClient();
 
-client.on('ready', () => {
-	console.log(`Logged in as ${client.user.tag}!`);
+mongooseConnect(process.env.MONGO_URI, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
 });
 
-client.on('message', (msg: Message) => {
+mongooseConnection.once('open', () => {
+	console.log('Connected to MongoDB successfully');
+});
+mongooseConnection.on('error', () => {
+	console.log('error connecting to database');
+});
+
+discordClient.on('ready', () => {
+	console.log(`Logged in as ${discordClient.user.tag}`);
+});
+
+discordClient.on('message', (msg: Message) => {
 	const messageContent: string = msg.content;
 
 	if (messageContent.startsWith(PREFIX) && isAllowedChannel(msg.channel as TextChannel | NewsChannel)) {
@@ -27,4 +40,4 @@ client.on('message', (msg: Message) => {
 	}
 });
 
-client.login(process.env.DISCORD_BOT_TOKEN);
+discordClient.login(process.env.DISCORD_BOT_TOKEN);
