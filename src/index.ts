@@ -1,8 +1,8 @@
 import register from './controllers/register';
-import { getCommand, isAllowedChannel } from './utils/message';
+import { getCommand, isAllowedChannel, isDeletionChannel } from './utils/message';
 import 'dotenv/config.js';
 import { Client as DiscordClient, Message, TextChannel, NewsChannel } from 'discord.js';
-import { PREFIX, COMMANDS } from './constants/message';
+import { COMMANDS } from './constants/message';
 import { connect as mongooseConnect, connection as mongooseConnection } from 'mongoose';
 import unregister from './controllers/unregister';
 
@@ -25,9 +25,10 @@ discordClient.on('ready', () => {
 });
 
 discordClient.on('message', (msg: Message) => {
-	const messageContent: string = msg.content;
+	if (msg.author.bot) return;
 
-	if (messageContent.startsWith(PREFIX) && isAllowedChannel(msg.channel as TextChannel | NewsChannel)) {
+	if (isAllowedChannel(msg.channel as TextChannel | NewsChannel)) {
+		const messageContent: string = msg.content;
 		const command: string = getCommand(messageContent);
 
 		switch (command) {
@@ -42,8 +43,12 @@ discordClient.on('message', (msg: Message) => {
 			case COMMANDS.HELP: {
 				break;
 			}
-			default:
+			default: {
+				if (isDeletionChannel(msg.channel as TextChannel | NewsChannel)) {
+					msg.delete();
+				}
 				break;
+			}
 		}
 	}
 });

@@ -61,6 +61,7 @@ const register = async (msg: Message): Promise<void> => {
 						createdHacker.record.email,
 					),
 				);
+				msg.member.setNickname(name);
 				registerSuccessReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
 			}
 		} catch (error) {

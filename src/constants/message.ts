@@ -1,16 +1,17 @@
-export const PREFIX = '';
+export const PREFIX = '!';
 
 export const COMMANDS = {
-	REGISTER: 'r',
-	UNREGISTER: 'u',
-	HELP: 'help',
+	REGISTER: `${PREFIX}register`,
+	UNREGISTER: `${PREFIX}unregister`,
+	HELP: `${PREFIX}help`,
 };
 
 export const CHANNELS = {
 	ALLOWED: ['bots'],
+	DELETION: ['bots'],
 };
 
-export const REGISTRATION_FORMAT = `\n**${PREFIX}${COMMANDS.REGISTER} Full Name email@domain.com**`;
+export const REGISTRATION_FORMAT = `\n**${COMMANDS.REGISTER} Full Name email@domain.com**`;
 
 export const MESSAGE_DELETE_TIMEOUT = 2000;
 
