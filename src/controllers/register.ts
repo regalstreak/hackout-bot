@@ -1,5 +1,6 @@
+import { getRoleByName } from './../utils/roles';
 import Hacker, { IHacker, IHackerDocument } from './../models/hacker';
-import { REPLIES } from './../constants/message';
+import { REPLIES, ROLES } from '../constants/constants';
 import { Message } from 'discord.js';
 import extractEmail from 'extract-email-address';
 import { getMessage } from '../utils/message';
@@ -61,14 +62,15 @@ const register = async (msg: Message): Promise<void> => {
 						createdHacker.record.email,
 					),
 				);
-				msg.member.setNickname(name);
 				registerSuccessReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
+				msg.member.setNickname(name);
+
+				msg.member.roles.add(getRoleByName(msg, ROLES.HACKER_UNDER_REVIEW));
 			}
 		} catch (error) {
 			console.log('Something wrong in database');
 		}
 	} catch (error) {
-		// email not found
 		console.log(error);
 		const wrongEmailReply = await msg.reply(REPLIES.WRONG_EMAIL);
 		wrongEmailReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });

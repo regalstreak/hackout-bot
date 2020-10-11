@@ -2,7 +2,7 @@ import register from './controllers/register';
 import { getCommand, isAllowedChannel, isDeletionChannel } from './utils/message';
 import 'dotenv/config.js';
 import { Client as DiscordClient, Message, TextChannel, NewsChannel } from 'discord.js';
-import { COMMANDS } from './constants/message';
+import { COMMANDS } from './constants/constants';
 import { connect as mongooseConnect, connection as mongooseConnection } from 'mongoose';
 import unregister from './controllers/unregister';
 
@@ -17,7 +17,7 @@ mongooseConnection.once('open', () => {
 	console.log('Connected to MongoDB successfully');
 });
 mongooseConnection.on('error', () => {
-	console.log('error connecting to database');
+	console.log('Error connecting to database');
 });
 
 discordClient.on('ready', () => {

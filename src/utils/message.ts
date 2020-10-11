@@ -1,5 +1,5 @@
 import { NewsChannel, TextChannel } from 'discord.js';
-import { PREFIX, CHANNELS } from './../constants/message';
+import { PREFIX, CHANNELS } from '../constants/constants';
 
 export const removePrefix = (msgContent: string): string => {
 	return msgContent.replace(PREFIX, '');

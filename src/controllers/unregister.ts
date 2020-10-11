@@ -1,5 +1,7 @@
+import { ROLES } from './../constants/constants';
+import { getRoleByName } from './../utils/roles';
 import Hacker, { IHacker, IHackerDocument } from './../models/hacker';
-import { REPLIES, MESSAGE_DELETE_TIMEOUT } from './../constants/message';
+import { REPLIES, MESSAGE_DELETE_TIMEOUT } from '../constants/constants';
 import { Message } from 'discord.js';
 
 type TDeleteHacker = {
@@ -42,6 +44,7 @@ const unregister = async (msg: Message): Promise<void> => {
 					),
 				);
 				unregisterSuccessReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
+				msg.member.roles.remove(getRoleByName(msg, ROLES.HACKER_UNDER_REVIEW));
 			} else {
 				const unregisterFailedReply = await msg.reply(REPLIES.UNREGISTER_FAIL);
 				unregisterFailedReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });

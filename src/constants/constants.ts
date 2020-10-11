@@ -23,3 +23,8 @@ export const REPLIES = {
 	UNREGISTER_SUCCESS: 'You have unregistered on Hackout Discord with your details:',
 	UNREGISTER_FAIL: `You have not registered on Hackout Discord, please register on Discord with the following format:${REGISTRATION_FORMAT}`,
 };
+
+export const ROLES = {
+	HACKER_UNDER_REVIEW: 'Hacker 2020 (Under Review)',
+	HACKER_ACCEPTED: 'Hacker 2020',
+};
