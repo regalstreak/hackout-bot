@@ -1,4 +1,4 @@
-import { NewsChannel, TextChannel } from 'discord.js';
+import { NewsChannel, TextChannel, Message, User } from 'discord.js';
 import { PREFIX, CHANNELS } from '../constants/constants';
 
 export const removePrefix = (msgContent: string): string => {
@@ -19,4 +19,8 @@ export const isAllowedChannel = (channel: TextChannel | NewsChannel): boolean =>
 
 export const isDeletionChannel = (channel: TextChannel | NewsChannel): boolean => {
 	return CHANNELS.DELETION.indexOf(channel.name) > -1;
+};
+
+export const isMessageByHackoutBot = (msg: Message, bot: User): boolean => {
+	return msg.author.id === bot.id;
 };

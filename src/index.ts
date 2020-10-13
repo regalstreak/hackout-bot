@@ -1,10 +1,12 @@
 import register from './controllers/register';
-import { getCommand, isAllowedChannel, isDeletionChannel } from './utils/message';
+import { getCommand, isAllowedChannel, isDeletionChannel, isMessageByHackoutBot } from './utils/message';
 import 'dotenv/config.js';
 import { Client as DiscordClient, Message, TextChannel, NewsChannel } from 'discord.js';
 import { COMMANDS } from './constants/constants';
 import { connect as mongooseConnect, connection as mongooseConnection } from 'mongoose';
 import unregister from './controllers/unregister';
+import ping from './controllers/ping';
+import defaultController from './controllers/default';
 
 const discordClient = new DiscordClient();
 
@@ -25,7 +27,12 @@ discordClient.on('ready', () => {
 });
 
 discordClient.on('message', (msg: Message) => {
-	if (msg.author.bot) return;
+	if (isMessageByHackoutBot(msg, discordClient.user)) {
+		return;
+	} else if (msg.author.bot) {
+		msg.delete();
+		return;
+	}
 
 	if (isAllowedChannel(msg.channel as TextChannel | NewsChannel)) {
 		const messageContent: string = msg.content;
@@ -43,10 +50,12 @@ discordClient.on('message', (msg: Message) => {
 			case COMMANDS.HELP: {
 				break;
 			}
+			case COMMANDS.PING: {
+				ping(msg);
+				break;
+			}
 			default: {
-				if (isDeletionChannel(msg.channel as TextChannel | NewsChannel)) {
-					msg.delete();
-				}
+				defaultController(msg, discordClient.user);
 				break;
 			}
 		}

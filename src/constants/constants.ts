@@ -4,6 +4,7 @@ export const COMMANDS = {
 	REGISTER: `${PREFIX}register`,
 	UNREGISTER: `${PREFIX}unregister`,
 	HELP: `${PREFIX}help`,
+	PING: `${PREFIX}ping`,
 };
 
 export const CHANNELS = {
