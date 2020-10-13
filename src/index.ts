@@ -27,14 +27,18 @@ discordClient.on('ready', () => {
 });
 
 discordClient.on('message', (msg: Message) => {
-	if (isMessageByHackoutBot(msg, discordClient.user)) {
-		return;
-	} else if (msg.author.bot) {
-		msg.delete();
+	const isItself = isMessageByHackoutBot(msg, discordClient.user);
+
+	if (isItself) {
 		return;
 	}
 
 	if (isAllowedChannel(msg.channel as TextChannel | NewsChannel)) {
+		if (!isItself && msg.author.bot) {
+			msg.delete();
+			return;
+		}
+
 		const messageContent: string = msg.content;
 		const command: string = getCommand(messageContent);
 
