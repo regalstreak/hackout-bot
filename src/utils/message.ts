@@ -14,11 +14,11 @@ export const getMessage = (msgContent: string): string => {
 };
 
 export const isAllowedChannel = (channel: TextChannel | NewsChannel): boolean => {
-	return CHANNELS.ALLOWED.indexOf(channel.name) > -1;
+	return CHANNELS.ALLOWED.filter((c) => c.id === channel.id).length > 0;
 };
 
 export const isDeletionChannel = (channel: TextChannel | NewsChannel): boolean => {
-	return CHANNELS.DELETION.indexOf(channel.name) > -1;
+	return CHANNELS.DELETION.filter((c) => c.id === channel.id).length > 0;
 };
 
 export const isMessageByHackoutBot = (msg: Message, bot: User): boolean => {

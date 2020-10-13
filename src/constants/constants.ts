@@ -7,9 +7,18 @@ export const COMMANDS = {
 	PING: `${PREFIX}ping`,
 };
 
-export const CHANNELS = {
-	ALLOWED: ['bots'],
-	DELETION: ['bots'],
+type TChannel = {
+	name?: string;
+	id: string;
+};
+type TChannels = {
+	ALLOWED: TChannel[];
+	DELETION: TChannel[];
+};
+
+export const CHANNELS: TChannels = {
+	ALLOWED: [{ name: 'bots', id: '764467340078874639' }],
+	DELETION: [{ name: 'bots', id: '764467340078874639' }],
 };
 
 export const REGISTRATION_FORMAT = `\n**${COMMANDS.REGISTER} Full Name email@domain.com**`;
