@@ -3,17 +3,8 @@ services:
     hackout_bot-dev:
         container_name: hackout_bot-dev
         build: .
-        depends_on:
-            - hackout_mongo
         restart: always
         volumes:
             - './:/app'
         env_file: ./.env
         command: yarn dev
-    hackout_mongo:
-        container_name: hackout_mongo
-        image: mongo
-        ports:
-            - '27017:27017'
-        restart: always
-        env_file: ./.env
