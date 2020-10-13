@@ -1,3 +1,4 @@
+import { REPLIES } from './../constants/constants';
 import { NewsChannel, TextChannel, Message, User } from 'discord.js';
 import { PREFIX, CHANNELS } from '../constants/constants';
 
@@ -23,4 +24,14 @@ export const isDeletionChannel = (channel: TextChannel | NewsChannel): boolean =
 
 export const isMessageByHackoutBot = (msg: Message, bot: User): boolean => {
 	return msg.author.id === bot.id;
+};
+
+export const deleteMessage = async (msg: Message, timeout: number = REPLIES.DELETE_TIMEOUT): Promise<void> => {
+	try {
+		if (isDeletionChannel(msg.channel as TextChannel | NewsChannel)) {
+			await msg.delete({ timeout });
+		}
+	} catch (error) {
+		console.log(error);
+	}
 };

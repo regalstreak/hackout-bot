@@ -1,10 +1,12 @@
-import { REPLIES } from './../constants/constants';
+import { MESSAGE_DELETE_TIMEOUT } from './../constants/constants';
 import { Message } from 'discord.js';
+import { deleteMessage } from '../utils/message';
 
 const ping = async (msg: Message): Promise<void> => {
 	try {
 		const pingReply = await msg.reply('Alive');
-		pingReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
+		deleteMessage(pingReply);
+		deleteMessage(msg, MESSAGE_DELETE_TIMEOUT);
 	} catch (error) {
 		console.log(error);
 	}

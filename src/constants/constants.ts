@@ -17,8 +17,11 @@ type TChannels = {
 };
 
 export const CHANNELS: TChannels = {
-	ALLOWED: [{ name: 'bots', id: '764467340078874639' }],
-	DELETION: [{ name: 'bots', id: '764467340078874639' }],
+	ALLOWED: [
+		{ name: 'register-hackathon', id: '765673553236066344' },
+		{ name: 'admin-bots', id: '764942500627611709' },
+	],
+	DELETION: [{ name: 'register-hackathon', id: '765673553236066344' }],
 };
 
 export const REGISTRATION_FORMAT = `\n**${COMMANDS.REGISTER} Full Name email@domain.com**`;

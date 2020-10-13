@@ -34,7 +34,7 @@ discordClient.on('message', (msg: Message) => {
 	}
 
 	if (isAllowedChannel(msg.channel as TextChannel | NewsChannel)) {
-		if (!isItself && msg.author.bot) {
+		if (!isItself && msg.author.bot && isDeletionChannel(msg.channel as TextChannel | NewsChannel)) {
 			msg.delete();
 			return;
 		}

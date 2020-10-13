@@ -1,9 +1,10 @@
+import { MESSAGE_DELETE_TIMEOUT } from './../constants/constants';
 import { getRoleByName } from './../utils/roles';
 import Hacker, { IHacker, IHackerDocument } from './../models/hacker';
 import { REPLIES, ROLES } from '../constants/constants';
-import { Message } from 'discord.js';
+import { Message, TextChannel, NewsChannel } from 'discord.js';
 import extractEmail from 'extract-email-address';
-import { getMessage } from '../utils/message';
+import { deleteMessage, getMessage, isDeletionChannel } from '../utils/message';
 
 type TCreateHacker = {
 	record: IHackerDocument;
@@ -53,7 +54,7 @@ const register = async (msg: Message): Promise<void> => {
 						createdHacker.record.email,
 					),
 				);
-				alreadyRegisteredReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
+				deleteMessage(alreadyRegisteredReply);
 			} else {
 				const registerSuccessReply = await msg.reply(
 					formatCreatedReply(
@@ -62,7 +63,7 @@ const register = async (msg: Message): Promise<void> => {
 						createdHacker.record.email,
 					),
 				);
-				registerSuccessReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
+				deleteMessage(registerSuccessReply);
 				msg.member.setNickname(name);
 
 				msg.member.roles.add(getRoleByName(msg, ROLES.HACKER_UNDER_REVIEW));
@@ -73,10 +74,9 @@ const register = async (msg: Message): Promise<void> => {
 	} catch (error) {
 		console.log(error);
 		const wrongEmailReply = await msg.reply(REPLIES.WRONG_EMAIL);
-		wrongEmailReply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
+		deleteMessage(wrongEmailReply)
 	}
-
-	msg.delete();
+	deleteMessage(msg, MESSAGE_DELETE_TIMEOUT);
 };
 
 export default register;

@@ -1,5 +1,5 @@
-import { isMessageByHackoutBot } from './../utils/message';
-import { REPLIES } from './../constants/constants';
+import { deleteMessage, isMessageByHackoutBot } from './../utils/message';
+import { REPLIES, MESSAGE_DELETE_TIMEOUT } from './../constants/constants';
 import { Message, TextChannel, NewsChannel, User } from 'discord.js';
 import { isDeletionChannel } from '../utils/message';
 
@@ -8,11 +8,11 @@ const defaultController = async (msg: Message, bot: User): Promise<void> => {
 		const isMessageMentionBot = msg.mentions.has(bot);
 		if (isMessageMentionBot) {
 			const reply = await msg.reply(REPLIES.WRONG_EMAIL);
-			reply.delete({ timeout: REPLIES.DELETE_TIMEOUT });
-			msg.delete();
+			deleteMessage(reply);
+			deleteMessage(msg, MESSAGE_DELETE_TIMEOUT);
 		} else if (
 			isDeletionChannel(msg.channel as TextChannel | NewsChannel) &&
-			isMessageByHackoutBot(msg, bot) &&
+			!isMessageByHackoutBot(msg, bot) &&
 			!isMessageMentionBot
 		) {
 			msg.delete();
