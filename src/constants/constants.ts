@@ -40,4 +40,5 @@ export const REPLIES = {
 export const ROLES = {
 	HACKER_UNDER_REVIEW: 'Hacker 2020 (Under Review)',
 	HACKER_ACCEPTED: 'Hacker 2020',
+	CONFERENCE: 'Conference 2020',
 };

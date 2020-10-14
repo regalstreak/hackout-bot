@@ -67,6 +67,7 @@ const register = async (msg: Message): Promise<void> => {
 				msg.member.setNickname(name);
 
 				msg.member.roles.add(getRoleByName(msg, ROLES.HACKER_UNDER_REVIEW));
+				msg.member.roles.add(getRoleByName(msg, ROLES.CONFERENCE));
 			}
 		} catch (error) {
 			console.log('Something wrong in database');
