@@ -1,10 +1,11 @@
+import { sendLogToChannel } from './../utils/logActions';
 import { ROLES } from './../constants/constants';
 import { getRoleByName } from './../utils/roles';
 import Hacker, { IHacker, IHackerDocument } from './../models/hacker';
 import { REPLIES, MESSAGE_DELETE_TIMEOUT } from '../constants/constants';
-import { Message, TextChannel, NewsChannel } from 'discord.js';
+import { Message } from 'discord.js';
 import UnregisteredHacker from '../models/unregisteredHacker';
-import { deleteMessage, isDeletionChannel } from '../utils/message';
+import { deleteMessage } from '../utils/message';
 
 type TDeleteHacker = {
 	deletedRecord?: IHackerDocument;
@@ -53,6 +54,8 @@ const unregister = async (msg: Message): Promise<void> => {
 				);
 				deleteMessage(unregisterSuccessReply);
 				msg.member.roles.remove(getRoleByName(msg, ROLES.HACKER_UNDER_REVIEW));
+
+				await sendLogToChannel(msg, deletedHacker, 'unregistered');
 			} else {
 				const unregisterFailedReply = await msg.reply(REPLIES.UNREGISTER_FAIL);
 				deleteMessage(unregisterFailedReply);

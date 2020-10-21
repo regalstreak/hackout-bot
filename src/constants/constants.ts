@@ -14,14 +14,27 @@ type TChannel = {
 type TChannels = {
 	ALLOWED: TChannel[];
 	DELETION: TChannel[];
+	LOGGER: TChannel[];
 };
 
+// rds = dev server channels, not needed on prod, only used for development
 export const CHANNELS: TChannels = {
 	ALLOWED: [
 		{ name: 'register-hackathon', id: '765673553236066344' },
 		{ name: 'admin-bots', id: '764942500627611709' },
+		// { name: 'rds-bots', id: '764467340078874639' },
 	],
-	DELETION: [{ name: 'register-hackathon', id: '765673553236066344' }],
+	DELETION: [
+		{ name: 'register-hackathon', id: '765673553236066344' },
+		// { name: 'rds-bots', id: '764467340078874639' },
+	],
+	LOGGER: [
+		{
+			name: 'discord-register-logger',
+			id: '768465256699265054',
+		},
+		// { name: 'rds-register-logger', id: '768476901806833694' },
+	],
 };
 
 export const REGISTRATION_FORMAT = `\n**${COMMANDS.REGISTER} Full Name email@domain.com**`;
