@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, TextChannel, User } from 'discord.js';
+import { ColorResolvable, Message, MessageEmbed, TextChannel, User } from 'discord.js';
 import { CHANNELS } from '../constants/constants';
 import Hacker from '../models/hacker';
 
@@ -13,11 +13,12 @@ const generateLoggerEmbed = async (
 	action: TlogAction,
 	email: string,
 	name: string,
+	color: ColorResolvable
 ): Promise<MessageEmbed> => {
 	return new MessageEmbed()
 		.setAuthor(author.tag, author.displayAvatarURL())
 		.setDescription(`**${author.toString()} ${action} on Discord!**`)
-		.setColor(4437377)
+		.setColor(color)
 		.addField('Email', email, true)
 		.addField('Name', name, true)
 		.setFooter(`Total Count - ${await getHackersCount()}`)
@@ -30,7 +31,7 @@ export const sendLogToChannel = async (msg: Message, hacker: any, action: TlogAc
 		CHANNELS.LOGGER.forEach(async (channel) => {
 			const logInChannel = msg.guild.channels.cache.get(channel.id) as TextChannel;
 			logInChannel.send(
-				await generateLoggerEmbed(msg.author, action, hacker.record.email, hacker.record.discordFullName),
+				await generateLoggerEmbed(msg.author, action, hacker.record.email, hacker.record.discordFullName, 4437377),
 			);
 		});
 	} else {
@@ -42,7 +43,7 @@ export const sendLogToChannel = async (msg: Message, hacker: any, action: TlogAc
 		}
 		CHANNELS.LOGGER.forEach(async (channel) => {
 			const logInChannel = msg.guild.channels.cache.get(channel.id) as TextChannel;
-			logInChannel.send(await generateLoggerEmbed(msg.author, action, email, name));
+			logInChannel.send(await generateLoggerEmbed(msg.author, action, email, name, 16736630));
 		});
 	}
 };
