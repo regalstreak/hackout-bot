@@ -17,7 +17,7 @@ const generateLoggerEmbed = async (
 ): Promise<MessageEmbed> => {
 	return new MessageEmbed()
 		.setAuthor(author.tag, author.displayAvatarURL())
-		.setDescription(`**${author.toString()} ${action} on Discord!**`)
+		.setDescription(`**${author} ${action} on Discord!**`)
 		.setColor(color)
 		.addField('Email', email, true)
 		.addField('Name', name, true)
