@@ -12,14 +12,14 @@ type TChannel = {
 	id: string;
 };
 type TChannels = {
-	ALLOWED: TChannel[];
+	REGISTRATION: TChannel[];
 	DELETION: TChannel[];
 	LOGGER: TChannel[];
 };
 
 // rds = dev server channels, not needed on prod, only used for development
 export const CHANNELS: TChannels = {
-	ALLOWED: [
+	REGISTRATION: [
 		{ name: 'register-hackathon', id: '765673553236066344' },
 		{ name: 'admin-bots', id: '764942500627611709' },
 		// { name: 'rds-bots', id: '764467340078874639' },

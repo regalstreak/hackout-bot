@@ -1,5 +1,5 @@
 import register from './controllers/register';
-import { getCommand, isAllowedChannel, isDeletionChannel, isMessageByHackoutBot } from './utils/message';
+import { getCommand, isRegistrationChannel, isDeletionChannel, isMessageByHackoutBot } from './utils/message';
 import 'dotenv/config.js';
 import { Client as DiscordClient, Message, TextChannel, NewsChannel } from 'discord.js';
 import { COMMANDS } from './constants/constants';
@@ -33,7 +33,7 @@ discordClient.on('message', (msg: Message) => {
 		return;
 	}
 
-	if (isAllowedChannel(msg.channel as TextChannel | NewsChannel)) {
+	if (isRegistrationChannel(msg.channel as TextChannel | NewsChannel)) {
 		if (!isItself && msg.author.bot && isDeletionChannel(msg.channel as TextChannel | NewsChannel)) {
 			msg.delete();
 			return;

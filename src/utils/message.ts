@@ -14,8 +14,8 @@ export const getMessage = (msgContent: string): string => {
 	return msgContent.split(' ').slice(1).join(' ').trim();
 };
 
-export const isAllowedChannel = (channel: TextChannel | NewsChannel): boolean => {
-	return CHANNELS.ALLOWED.filter((c) => c.id === channel.id).length > 0;
+export const isRegistrationChannel = (channel: TextChannel | NewsChannel): boolean => {
+	return CHANNELS.REGISTRATION.filter((c) => c.id === channel.id).length > 0;
 };
 
 export const isDeletionChannel = (channel: TextChannel | NewsChannel): boolean => {
