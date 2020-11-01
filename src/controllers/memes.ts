@@ -1,4 +1,5 @@
 import { Message, Collection, MessageEmbed, MessageReaction, MessageCollector } from 'discord.js';
+import { deleteMessage } from '../utils/message';
 
 let collector: MessageCollector = null;
 
@@ -34,9 +35,11 @@ const generateStartMemesEmbed = (memesStartDate: Date): MessageEmbed => {
 	return new MessageEmbed().setTitle(`Starting memes for today!`).setColor(1925102).setTimestamp(memesStartDate);
 };
 
-export const stopListeningForMemes = (): void => {
+export const stopListeningForMemes = async (msg: Message): Promise<void> => {
 	if (collector) {
 		collector.stop();
+		const stopMemes = msg.reply('Stopped memes!');
+		deleteMessage(await stopMemes, true);
 		return;
 	}
 	console.log('Collector is null');
@@ -52,6 +55,7 @@ export const startListeningForMemes = async (msg: Message): Promise<void> => {
 		{ time: 24 * 60 * 60 * 1000 },
 	);
 	msg.channel.send(generateStartMemesEmbed(memesStartDate));
+	console.log('Started collecting memes');
 
 	collector.on('collect', async (collectedMessage: Message) => {
 		try {
@@ -60,19 +64,21 @@ export const startListeningForMemes = async (msg: Message): Promise<void> => {
 	});
 
 	collector.on('end', (collectedMessages: Collection<string, Message>) => {
-		const sortedCollectedMessages = collectedMessages.sort((a, b) => {
-			const bReactionCount = getUpvoteReaction(b)?.count;
-			const aReactionCount = getUpvoteReaction(a)?.count;
-			return bReactionCount - aReactionCount;
-		});
-		const top3 = sortedCollectedMessages.array().slice(0, 3);
-		const leadersEmbed = generateMemeLeaderboardEmbed(
-			top3,
-			sortedCollectedMessages.size,
-			collectedMessages.first().url,
-			memesStartDate,
-		);
-		msg.channel.send(leadersEmbed);
-		console.log('end collecting ' + sortedCollectedMessages.first().content);
+		if (collectedMessages.size > 0) {
+			const sortedCollectedMessages = collectedMessages.sort((a, b) => {
+				const bReactionCount = getUpvoteReaction(b)?.count;
+				const aReactionCount = getUpvoteReaction(a)?.count;
+				return bReactionCount - aReactionCount;
+			});
+			const top3 = sortedCollectedMessages.array().slice(0, 3);
+			const leadersEmbed = generateMemeLeaderboardEmbed(
+				top3,
+				sortedCollectedMessages.size,
+				collectedMessages.first().url,
+				memesStartDate,
+			);
+			msg.channel.send(leadersEmbed);
+		}
+		console.log('Finished collecting memes');
 	});
 };

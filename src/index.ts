@@ -48,7 +48,7 @@ discordClient.on('message', (msg: Message) => {
 				startListeningForMemes(msg);
 				break;
 			case COMMANDS.MEMES_STOP:
-				stopListeningForMemes();
+				stopListeningForMemes(msg);
 				break;
 			default:
 				break;

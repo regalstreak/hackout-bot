@@ -30,9 +30,13 @@ export const isMessageByHackoutBot = (msg: Message, bot: User): boolean => {
 	return msg.author.id === bot.id;
 };
 
-export const deleteMessage = async (msg: Message, timeout: number = REPLIES.DELETE_TIMEOUT): Promise<void> => {
+export const deleteMessage = async (
+	msg: Message,
+	overrideDeletion = false,
+	timeout: number = REPLIES.DELETE_TIMEOUT,
+): Promise<void> => {
 	try {
-		if (isDeletionChannel(msg.channel as TextChannel | NewsChannel)) {
+		if (isDeletionChannel(msg.channel as TextChannel | NewsChannel) || overrideDeletion) {
 			await msg.delete({ timeout });
 		}
 	} catch (error) {
