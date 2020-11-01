@@ -18,6 +18,10 @@ export const isRegistrationChannel = (channel: TextChannel | NewsChannel): boole
 	return CHANNELS.REGISTRATION.filter((c) => c.id === channel.id).length > 0;
 };
 
+export const isMemeChannel = (channel: TextChannel | NewsChannel): boolean => {
+	return CHANNELS.MEMES.filter((c) => c.id === channel.id).length > 0;
+};
+
 export const isDeletionChannel = (channel: TextChannel | NewsChannel): boolean => {
 	return CHANNELS.DELETION.filter((c) => c.id === channel.id).length > 0;
 };

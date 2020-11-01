@@ -5,6 +5,8 @@ export const COMMANDS = {
 	UNREGISTER: `${PREFIX}unregister`,
 	HELP: `${PREFIX}help`,
 	PING: `${PREFIX}ping`,
+	MEMES_START: `${PREFIX}startmemes`,
+	MEMES_STOP: `${PREFIX}stopmemes`,
 };
 
 type TChannel = {
@@ -15,6 +17,7 @@ type TChannels = {
 	REGISTRATION: TChannel[];
 	DELETION: TChannel[];
 	LOGGER: TChannel[];
+	MEMES: TChannel[];
 };
 
 // rds = dev server channels, not needed on prod, only used for development
@@ -35,6 +38,16 @@ export const CHANNELS: TChannels = {
 		},
 		// { name: 'rds-register-logger', id: '768476901806833694' },
 	],
+	MEMES: [
+		{
+			name: 'memes',
+			id: '764985789607575633',
+		},
+		{
+			name: 'rds-memes',
+			id: '772218204826894337',
+		},
+	],
 };
 
 export const REGISTRATION_FORMAT = `\n**${COMMANDS.REGISTER} Full Name email@domain.com**`;
@@ -54,4 +67,5 @@ export const ROLES = {
 	HACKER_UNDER_REVIEW: 'Hacker 2020 (Under Review)',
 	HACKER_ACCEPTED: 'Hacker 2020',
 	CONFERENCE: 'Conference 2020',
+	ORGANISER: 'Organiser',
 };

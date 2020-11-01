@@ -1,5 +1,13 @@
+import { isOrganiser } from './utils/roles';
+import { startListeningForMemes, stopListeningForMemes } from './controllers/memes';
 import register from './controllers/register';
-import { getCommand, isRegistrationChannel, isDeletionChannel, isMessageByHackoutBot } from './utils/message';
+import {
+	getCommand,
+	isRegistrationChannel,
+	isDeletionChannel,
+	isMessageByHackoutBot,
+	isMemeChannel,
+} from './utils/message';
 import 'dotenv/config.js';
 import { Client as DiscordClient, Message, TextChannel, NewsChannel } from 'discord.js';
 import { COMMANDS } from './constants/constants';
@@ -30,6 +38,21 @@ discordClient.on('message', (msg: Message) => {
 	const isItself = isMessageByHackoutBot(msg, discordClient.user);
 
 	if (isItself) {
+		return;
+	}
+
+	if (isMemeChannel(msg.channel as TextChannel | NewsChannel) && isOrganiser(msg)) {
+		const command: string = getCommand(msg.content);
+		switch (command) {
+			case COMMANDS.MEMES_START:
+				startListeningForMemes(msg);
+				break;
+			case COMMANDS.MEMES_STOP:
+				stopListeningForMemes();
+				break;
+			default:
+				break;
+		}
 		return;
 	}
 
