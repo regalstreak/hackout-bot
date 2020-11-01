@@ -43,10 +43,10 @@ export const CHANNELS: TChannels = {
 			name: 'memes',
 			id: '764985789607575633',
 		},
-		{
-			name: 'rds-memes',
-			id: '772218204826894337',
-		},
+		// {
+		// 	name: 'rds-memes',
+		// 	id: '772218204826894337',
+		// },
 	],
 };
 
