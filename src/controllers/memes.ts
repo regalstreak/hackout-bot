@@ -1,3 +1,4 @@
+import { REPLIES } from './../constants/constants';
 import { Message, Collection, MessageEmbed, MessageReaction, MessageCollector } from 'discord.js';
 import { deleteMessage } from '../utils/message';
 
@@ -39,7 +40,7 @@ export const stopListeningForMemes = async (msg: Message): Promise<void> => {
 	if (collector) {
 		collector.stop();
 		const stopMemes = msg.reply('Stopped memes!');
-		deleteMessage(await stopMemes, true);
+		deleteMessage(await stopMemes, REPLIES.DELETE_TIMEOUT, true);
 		return;
 	}
 	console.log('Collector is null');
