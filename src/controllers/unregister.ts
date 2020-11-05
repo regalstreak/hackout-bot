@@ -1,6 +1,6 @@
+import { getRoleByName } from './../utils/roles';
 import { sendLogToChannel } from './../utils/logActions';
 import { ROLES } from './../constants/constants';
-import { getRoleByName } from './../utils/roles';
 import Hacker, { IHacker, IHackerDocument } from './../models/hacker';
 import { REPLIES, MESSAGE_DELETE_TIMEOUT } from '../constants/constants';
 import { Message } from 'discord.js';
@@ -53,7 +53,7 @@ const unregister = async (msg: Message): Promise<void> => {
 					),
 				);
 				deleteMessage(unregisterSuccessReply);
-				msg.member.roles.remove(getRoleByName(msg, ROLES.HACKER_UNDER_REVIEW));
+				msg.member.roles.remove(getRoleByName(msg.guild, ROLES.HACKER_UNDER_REVIEW));
 
 				await sendLogToChannel(msg, deletedHacker, 'unregistered');
 			} else {

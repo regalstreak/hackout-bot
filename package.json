@@ -14,10 +14,12 @@
 		"dev": "ts-node-dev --respawn -T ./src/index.ts"
 	},
 	"dependencies": {
+		"csvtojson": "^2.0.10",
 		"discord.js": "^12.3.1",
 		"dotenv": "^8.2.0",
 		"extract-email-address": "^1.4.0",
-		"mongoose": "^5.10.9"
+		"mongoose": "^5.10.9",
+		"request": "^2.88.2"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^11.0.0",

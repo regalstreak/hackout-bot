@@ -7,6 +7,8 @@ export const COMMANDS = {
 	PING: `${PREFIX}ping`,
 	MEMES_START: `${PREFIX}startmemes`,
 	MEMES_STOP: `${PREFIX}stopmemes`,
+	PROCESS_HACKERS: `${PREFIX}processHackers`,
+	PURGE_TEAM_CHANNELS: `${PREFIX}purgeTeams`,
 };
 
 type TChannel = {
@@ -64,8 +66,21 @@ export const REPLIES = {
 };
 
 export const ROLES = {
+	EVERYONE: '@everyone',
 	HACKER_UNDER_REVIEW: 'Hacker 2020 (Under Review)',
 	HACKER_ACCEPTED: 'Hacker 2020',
 	CONFERENCE: 'Conference 2020',
 	ORGANISER: 'Organiser',
+	ADMIN: 'Server Admin',
+	MENTOR: 'Mentor',
+	SPEAKER: 'Speaker',
+	FINDING_TEAMS: 'Finding Teams',
+};
+
+export const DEVFOLIO_CSV = {
+	NO_TEAM: 'N/A',
+};
+
+export const getTeamWelcomeMessages = (teamRole: string): string => {
+	return `Hey ${teamRole}, welcome to Hackout!\nPlease make sure you send your Devfolio usernames here so the organisers can check you in.\nThis is necessary for your project submissions!`;
 };

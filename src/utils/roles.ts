@@ -1,11 +1,14 @@
-import { ROLES } from './../constants/constants';
-import { Role, Message } from 'discord.js';
+import { Role, Message, Guild } from 'discord.js';
 
-export const getRoleByName = (msg: Message, roleName: string): Role => {
-	return msg.guild.roles.cache.find((r) => r.name === roleName);
+export const getRoleByName = (guild: Guild, roleName: string): Role => {
+	return guild.roles.cache.find((r) => r.name === roleName);
 };
 
-export const isOrganiser = (msg: Message): boolean => {
-	const organiserRole = getRoleByName(msg, ROLES.ORGANISER).id;
-	return msg.member.roles.cache.has(organiserRole);
+export const isMessageAuthorRoleByName = (roleName: string, msg: Message): boolean => {
+	const role = getRoleByName(msg.guild, roleName).id;
+	return msg.member.roles.cache.has(role);
+};
+
+export const getRoleById = (guild: Guild, roleId: string): Role => {
+	return guild.roles.cache.get(roleId);
 };

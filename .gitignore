@@ -6,3 +6,4 @@
 .env
 package-lock.json
 .eslintcache
+.DS_Store

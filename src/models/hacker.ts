@@ -7,6 +7,7 @@ export interface IHacker {
 	discordFullName: string;
 
 	accepted?: boolean;
+	processed?: boolean;
 
 	devfolioFirstName?: string;
 	devfolioLastName?: string;
@@ -43,6 +44,11 @@ export const getHackerSchema = ({ collection }: { collection: string }): Schema 
 			accepted: {
 				type: Boolean,
 				default: false,
+			},
+
+			processed: {
+				type: Boolean,
+				default: false
 			},
 
 			devfolioFirstName: String,

@@ -1,4 +1,6 @@
-import { isOrganiser } from './utils/roles';
+import { purgeTeams } from './controllers/purgeTeams';
+import { isMessageAuthorRoleByName } from './utils/roles';
+import { processHackers } from './controllers/processHackers';
 import { startListeningForMemes, stopListeningForMemes } from './controllers/memes';
 import register from './controllers/register';
 import {
@@ -10,14 +12,13 @@ import {
 } from './utils/message';
 import 'dotenv/config.js';
 import { Client as DiscordClient, Message, TextChannel, NewsChannel } from 'discord.js';
-import { COMMANDS } from './constants/constants';
+import { COMMANDS, ROLES } from './constants/constants';
 import { connect as mongooseConnect, connection as mongooseConnection } from 'mongoose';
 import unregister from './controllers/unregister';
 import ping from './controllers/ping';
 import defaultController from './controllers/default';
 
 const discordClient = new DiscordClient();
-
 mongooseConnect(process.env.MONGO_URI, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
@@ -31,7 +32,9 @@ mongooseConnection.on('error', () => {
 });
 
 discordClient.on('ready', () => {
+	console.log(`\n\n-----------------------------`);
 	console.log(`Logged in as ${discordClient.user.tag}`);
+	console.log(`-----------------------------\n\n`);
 });
 
 discordClient.on('message', (msg: Message) => {
@@ -41,7 +44,7 @@ discordClient.on('message', (msg: Message) => {
 		return;
 	}
 
-	if (isMemeChannel(msg.channel as TextChannel | NewsChannel) && isOrganiser(msg)) {
+	if (isMemeChannel(msg.channel as TextChannel | NewsChannel) && isMessageAuthorRoleByName(ROLES.ORGANISER, msg)) {
 		const command: string = getCommand(msg.content);
 		switch (command) {
 			case COMMANDS.MEMES_START:
@@ -79,6 +82,18 @@ discordClient.on('message', (msg: Message) => {
 			}
 			case COMMANDS.PING: {
 				ping(msg);
+				break;
+			}
+			case COMMANDS.PROCESS_HACKERS: {
+				if (isMessageAuthorRoleByName(ROLES.ADMIN, msg)) {
+					processHackers(msg);
+				}
+				break;
+			}
+			case COMMANDS.PURGE_TEAM_CHANNELS: {
+				if (isMessageAuthorRoleByName(ROLES.ADMIN, msg)) {
+					purgeTeams(msg);
+				}
 				break;
 			}
 			default: {

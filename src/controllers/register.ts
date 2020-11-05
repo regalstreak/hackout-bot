@@ -1,6 +1,6 @@
+import { getRoleByName } from './../utils/roles';
 import { sendLogToChannel } from './../utils/logActions';
 import { MESSAGE_DELETE_TIMEOUT } from './../constants/constants';
-import { getRoleByName } from './../utils/roles';
 import Hacker, { IHacker, IHackerDocument } from './../models/hacker';
 import { REPLIES, ROLES } from '../constants/constants';
 import { Message } from 'discord.js';
@@ -67,13 +67,13 @@ const register = async (msg: Message): Promise<void> => {
 				deleteMessage(registerSuccessReply);
 				msg.member.setNickname(name);
 
-				msg.member.roles.add(getRoleByName(msg, ROLES.HACKER_UNDER_REVIEW));
-				msg.member.roles.add(getRoleByName(msg, ROLES.CONFERENCE));
+				msg.member.roles.add(getRoleByName(msg.guild, ROLES.HACKER_UNDER_REVIEW));
+				msg.member.roles.add(getRoleByName(msg.guild, ROLES.CONFERENCE));
 
 				await sendLogToChannel(msg, createdHacker, 'registered');
 			}
 		} catch (error) {
-			console.log('Something wrong in database');
+			console.log('Something wrong in database', error);
 		}
 	} catch (error) {
 		console.log(error);
