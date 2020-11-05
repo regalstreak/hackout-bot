@@ -69,7 +69,7 @@ const createTeam = async (teamName: ITeam['teamName'], guild: Guild): Promise<TC
 				return { teamRecord: teamNameRecord, discordRole: teamDiscordRole };
 			}
 
-			const teamIndex = await Team.countDocuments({}).exec();
+			const teamIndex = (await Team.countDocuments({}).exec()) + 1;
 			return {
 				teamRecord: teamNameRecord,
 				discordRole: await guild.roles.create({ data: { name: getTeamRoleName(teamIndex, teamName) } }),
@@ -80,7 +80,7 @@ const createTeam = async (teamName: ITeam['teamName'], guild: Guild): Promise<TC
 
 		const newTeam: ITeam = {
 			teamName: teamName,
-			teamIndex: await Team.countDocuments({}).exec(),
+			teamIndex: (await Team.countDocuments({}).exec()) + 1,
 			discordTeamRoleId: '',
 		};
 
