@@ -33,9 +33,9 @@ const getTeamRoleName = (teamIndex: number, teamName: string): string => {
 };
 const getTeamChannelName = (teamIndex: number, teamName: string, type: 'voice' | 'text' = 'text'): string => {
 	if (type === 'voice') {
-		return `Team ${teamIndex} ${teamName} VC`;
+		return `Team ${teamIndex + 1} ${teamName} VC`;
 	}
-	return `team-${teamIndex}-${teamName}`.toLowerCase().replace(' ', '-');
+	return `team-${teamIndex + 1}-${teamName}`.toLowerCase().replace(' ', '-');
 };
 
 const getBaseTeamChannelPermissionOverrides = (guild: Guild): OverwriteResolvable[] => {
