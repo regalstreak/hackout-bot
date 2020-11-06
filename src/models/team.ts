@@ -23,7 +23,7 @@ export const getTeamSchema = ({ collection }: { collection: string }): Schema =>
 			},
 			discordTeamRoleId: {
 				type: String,
-				required: true,
+				// required: true,
 				unique: true,
 			},
 		},

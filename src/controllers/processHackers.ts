@@ -1,6 +1,5 @@
-import { getMessage } from './../utils/message';
 import { Message, Role, Guild, CategoryChannel, OverwriteResolvable, GuildMember, TextChannel } from 'discord.js';
-import { getRoleByName, getRoleById } from './../utils/roles';
+import { getRoleByName } from './../utils/roles';
 import { IHackerDocument } from './../models/hacker';
 import { ITeam, ITeamDocument } from '../models/team';
 import { ROLES, DEVFOLIO_CSV, getTeamWelcomeMessages } from './../constants/constants';
@@ -26,7 +25,7 @@ interface IHackerCsvRecordExtended extends IHackerCsvRecord {
 
 export type TCreateTeam = {
 	teamRecord: ITeamDocument;
-	discordRole: Role;
+	discordRole?: Role;
 };
 
 const getTeamRoleName = (teamIndex: number, teamName: string): string => {
@@ -57,53 +56,33 @@ const getBaseTeamChannelPermissionOverrides = (guild: Guild): OverwriteResolvabl
 			id: getRoleByName(guild, ROLES.MENTOR).id,
 			allow: ['VIEW_CHANNEL'],
 		},
+		{
+			id: getRoleByName(guild, ROLES.HACKER_ACCEPTED).id,
+			allow: ['VIEW_CHANNEL'],
+		},
 	];
 };
 
-const createTeam = async (teamName: ITeam['teamName'], guild: Guild): Promise<TCreateTeam> => {
+const createTeam = async (teamName: ITeam['teamName']): Promise<TCreateTeam> => {
 	try {
 		const teamNameRecord = await Team.findOne({ teamName });
 
 		if (teamNameRecord) {
-			const teamDiscordRole = getRoleById(guild, teamNameRecord.discordTeamRoleId);
-			if (teamDiscordRole) {
-				return { teamRecord: teamNameRecord, discordRole: teamDiscordRole };
-			}
-
-			const teamIndex = (await Team.countDocuments({}).exec()) + 1;
 			return {
 				teamRecord: teamNameRecord,
-				discordRole: await guild.roles.create({ data: { name: getTeamRoleName(teamIndex, teamName) } }),
 			};
 		}
-
-		let teamDiscordRole: Role;
 
 		const newTeam: ITeam = {
 			teamName: teamName,
 			teamIndex: (await Team.countDocuments({}).exec()) + 1,
-			discordTeamRoleId: '',
 		};
 
-		const existingTeamRole = guild.roles.cache.filter((role) => {
-			return role.name.includes(teamName);
-		});
-
-		if (existingTeamRole.size > 0) {
-			teamDiscordRole = existingTeamRole.first();
-		} else {
-			try {
-				teamDiscordRole = await guild.roles.create({
-					data: { name: getTeamRoleName(newTeam.teamIndex, teamName) },
-				});
-			} catch (error) {
-				console.log(error);
-			}
-		}
-		newTeam.discordTeamRoleId = teamDiscordRole.id;
 		const newTeamMongoRecord = await Team.create(newTeam);
 
-		return { teamRecord: newTeamMongoRecord, discordRole: teamDiscordRole };
+		return {
+			teamRecord: newTeamMongoRecord,
+		};
 	} catch (error) {
 		console.log('createTeamerror', error);
 	}
@@ -130,13 +109,7 @@ const createTeamsChannel = async (guild: Guild, team: TCreateTeam): Promise<void
 			(teamGroupNumber + 1) * 25
 		}`;
 		const teamCategoryCollection = guild.channels.cache.filter((c) => c.name === teamCategoryName);
-		const teamChannelPermissionOverrides: OverwriteResolvable[] = [
-			...getBaseTeamChannelPermissionOverrides(guild),
-			{
-				id: team.discordRole.id,
-				allow: 'VIEW_CHANNEL',
-			},
-		];
+		const teamChannelPermissionOverrides: OverwriteResolvable[] = [...getBaseTeamChannelPermissionOverrides(guild)];
 
 		let teamCategory: CategoryChannel = teamCategoryCollection?.first() as CategoryChannel;
 
@@ -157,7 +130,7 @@ const createTeamsChannel = async (guild: Guild, team: TCreateTeam): Promise<void
 				parent: teamCategory,
 			});
 			teamTextChannel.overwritePermissions(teamChannelPermissionOverrides);
-			(teamTextChannel as TextChannel).send(getTeamWelcomeMessages(`<@&${team.discordRole.id}>`));
+			(teamTextChannel as TextChannel).send(getTeamWelcomeMessages(team.teamRecord.teamName));
 		}
 		let teamVoiceChannel = guild.channels.cache
 			.filter((c) => c.name.includes(teamVoiceChannelName) && c.type === 'voice')
@@ -266,7 +239,7 @@ const getHackersFromCsv = async (
 				}
 				hackersJson.registered.individuals.push(hackerCsv);
 			} else {
-				const team = await createTeam(hackerCsv['Team Name'], guild);
+				const team = await createTeam(hackerCsv['Team Name']);
 
 				const teamIndex = hackersJson.registered?.teams?.findIndex(
 					(t) => t.teamName === hackerCsv['Team Name'],
@@ -274,6 +247,18 @@ const getHackersFromCsv = async (
 				if (teamIndex >= 0) {
 					hackersJson.registered.teams[teamIndex].members.push(hackerCsv);
 				} else {
+					try {
+						guild.roles
+							.create({
+								data: {
+									name: getTeamRoleName(teamIndex, hackerCsv['Team Name']),
+								},
+							})
+							.then(console.log)
+							.catch(console.error);
+					} catch (error) {
+						console.log('rolecreationerror');
+					}
 					await createTeamsChannel(guild, team);
 					hackersJson.registered.teams.push({
 						teamName: hackerCsv['Team Name'],
@@ -282,7 +267,6 @@ const getHackersFromCsv = async (
 				}
 				if (!devMode) {
 					hackerDiscord.roles.remove(await getFindingTeamsRole(guild));
-					await hackerDiscord.roles.add(team.discordRole);
 				}
 			}
 
@@ -295,9 +279,8 @@ const getHackersFromCsv = async (
 };
 
 export const processHackers = async (msg: Message): Promise<void> => {
-	const csvStringResponse = await fetch(getMessage(msg.content));
+	const csvStringResponse = await fetch(msg.attachments.first().url);
 	const hackersCsv: IHackerCsvRecord[] = await csvToJson().fromString(await csvStringResponse.text());
-
 	try {
 		const hackers = await getHackersFromCsv(hackersCsv, msg.guild);
 		let totalTeamMembers = 0;
@@ -313,7 +296,14 @@ export const processHackers = async (msg: Message): Promise<void> => {
 			const notRegisteredHackers = hackers.notRegistered.map((hnr) => {
 				return `${hnr['First Name']} ${hnr['Last Name']} from ${hnr.College}`;
 			});
-			msg.reply(`Not registered hackers list\n\n${notRegisteredHackers}`);
+
+			msg.channel.send(`Not registered hackers list: ${notRegisteredHackers.length}\n\n`);
+			const notRegisteredHackersString = notRegisteredHackers.join('\n');
+
+			for (let i = 0; i < notRegisteredHackersString.length; i += 2000) {
+				const toSend = notRegisteredHackersString.substring(i, Math.min(notRegisteredHackersString.length, i + 2000));
+				await msg.reply(toSend);
+			}
 		}
 	} catch (error) {
 		console.log(error);
