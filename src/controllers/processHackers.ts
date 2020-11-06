@@ -35,7 +35,7 @@ const getTeamChannelName = (teamIndex: number, teamName: string, type: 'voice' |
 	if (type === 'voice') {
 		return `Team ${teamIndex} ${teamName} VC`;
 	}
-	return `team-${teamIndex}-${teamName}`.toLowerCase().replace(' ', '-');
+	return `team-${teamIndex}-${teamName}`.toLowerCase().replace(/[^\w-]/gi, '');
 };
 
 const getBaseTeamChannelPermissionOverrides = (guild: Guild): OverwriteResolvable[] => {
@@ -54,10 +54,6 @@ const getBaseTeamChannelPermissionOverrides = (guild: Guild): OverwriteResolvabl
 		},
 		{
 			id: getRoleByName(guild, ROLES.MENTOR).id,
-			allow: ['VIEW_CHANNEL'],
-		},
-		{
-			id: getRoleByName(guild, ROLES.HACKER_ACCEPTED).id,
 			allow: ['VIEW_CHANNEL'],
 		},
 	];
@@ -102,24 +98,45 @@ const getFindingTeamsRole = async (guild: Guild): Promise<Role> => {
 	});
 };
 
-const createTeamsChannel = async (guild: Guild, team: TCreateTeam): Promise<void> => {
+// Creates team role, category, text, voice channels, adds role to hacker
+const createTeamRoleChannel = async (guild: Guild, team: TCreateTeam, hackerDiscord: GuildMember): Promise<void> => {
 	try {
+		// Create Team Role
+		const teamRoleName = getTeamRoleName(team.teamRecord.teamIndex, team.teamRecord.teamName);
+		let teamRole = getRoleByName(guild, teamRoleName);
+		if (!teamRole) {
+			teamRole = await guild.roles.create({
+				data: {
+					name: teamRoleName,
+				},
+			});
+		}
+
+		try {
+			hackerDiscord.roles.add(teamRole);
+		} catch (error) {
+			console.log('createTeamRoleChannel hackerDiscord Error: ', error);
+		}
+
+		const teamChannelPermissionOverrides: OverwriteResolvable[] = [
+			...getBaseTeamChannelPermissionOverrides(guild),
+			{ id: teamRole.id, allow: 'VIEW_CHANNEL' },
+		];
+
+		// Create Team Category
 		const teamGroupNumber = Math.floor(team.teamRecord.teamIndex / 25);
 		const teamCategoryName = `Teams ${teamGroupNumber === 0 ? 1 : teamGroupNumber * 25}-${
 			(teamGroupNumber + 1) * 25
 		}`;
 		const teamCategoryCollection = guild.channels.cache.filter((c) => c.name === teamCategoryName);
-		const teamChannelPermissionOverrides: OverwriteResolvable[] = [...getBaseTeamChannelPermissionOverrides(guild)];
-
 		let teamCategory: CategoryChannel = teamCategoryCollection?.first() as CategoryChannel;
-
 		if (!teamCategory) {
 			teamCategory = await guild.channels.create(teamCategoryName, { type: 'category' });
 			teamCategory.overwritePermissions(getBaseTeamChannelPermissionOverrides(guild));
 		}
 
+		// Create Team Text Channel
 		const teamTextChannelName = getTeamChannelName(team.teamRecord.teamIndex, team.teamRecord.teamName);
-		const teamVoiceChannelName = getTeamChannelName(team.teamRecord.teamIndex, team.teamRecord.teamName, 'voice');
 		let teamTextChannel = guild.channels.cache
 			.filter((c) => c.name.includes(teamTextChannelName) && c.type === 'text')
 			?.first();
@@ -130,8 +147,13 @@ const createTeamsChannel = async (guild: Guild, team: TCreateTeam): Promise<void
 				parent: teamCategory,
 			});
 			teamTextChannel.overwritePermissions(teamChannelPermissionOverrides);
-			(teamTextChannel as TextChannel).send(getTeamWelcomeMessages(team.teamRecord.teamName));
-		}
+			(teamTextChannel as TextChannel).send(getTeamWelcomeMessages(`<@&${teamRole.id}>`));
+		} /* else {
+			teamTextChannel.overwritePermissions(teamChannelPermissionOverrides);
+		} */
+
+		// Create Team Voice Channel
+		const teamVoiceChannelName = getTeamChannelName(team.teamRecord.teamIndex, team.teamRecord.teamName, 'voice');
 		let teamVoiceChannel = guild.channels.cache
 			.filter((c) => c.name.includes(teamVoiceChannelName) && c.type === 'voice')
 			?.first();
@@ -141,7 +163,9 @@ const createTeamsChannel = async (guild: Guild, team: TCreateTeam): Promise<void
 				parent: teamCategory,
 			});
 			teamVoiceChannel.overwritePermissions(teamChannelPermissionOverrides);
-		}
+		} /* else {
+			teamVoiceChannel.overwritePermissions(teamChannelPermissionOverrides);
+		} */
 	} catch (error) {
 		console.log('createteamschannel', error);
 	}
@@ -248,10 +272,11 @@ const getHackersFromCsv = async (
 				const teamIndex = hackersJson.registered?.teams?.findIndex(
 					(t) => t.teamName === hackerCsv['Team Name'],
 				);
+
 				if (teamIndex >= 0) {
 					hackersJson.registered.teams[teamIndex].members.push(hackerCsv);
 				} else {
-					await createTeamsChannel(guild, team);
+					await createTeamRoleChannel(guild, team, hackerDiscord);
 					hackersJson.registered.teams.push({
 						teamName: hackerCsv['Team Name'],
 						members: [hackerCsv],
@@ -277,16 +302,14 @@ export const processHackers = async (msg: Message): Promise<void> => {
 		const hackers = await getHackersFromCsv(hackersCsv, msg.guild);
 		let totalTeamMembers = 0;
 		hackers.registered.teams.forEach((t) => {
-			totalTeamMembers = totalTeamMembers + t.members.length + 1;
+			totalTeamMembers = totalTeamMembers + t.members.length;
 		});
 		msg.reply(
-			`Processed ${hackers.registered.individuals.length + 1} individuals\nProcessed ${
-				hackers.registered.teams.length + 1
-			} teams with ${totalTeamMembers} members`,
+			`Processed ${hackers.registered.individuals.length} individuals\nProcessed ${hackers.registered.teams.length} teams with ${totalTeamMembers} members`,
 		);
 		if (hackers.notRegistered.length > 0) {
 			const notRegisteredHackers = hackers.notRegistered.map((hnr) => {
-				return `${hnr['First Name']} ${hnr['Last Name']} from ${hnr.College}`;
+				return `**${hnr['First Name']} ${hnr['Last Name']}** from team **${hnr['Team Name']}**`;
 			});
 
 			msg.channel.send(`Not registered hackers list: ${notRegisteredHackers.length}\n\n`);
@@ -297,6 +320,7 @@ export const processHackers = async (msg: Message): Promise<void> => {
 					i,
 					Math.min(notRegisteredHackersString.length, i + 1000),
 				);
+				console.log(toSend);
 				await msg.channel.send(toSend);
 			}
 		}
