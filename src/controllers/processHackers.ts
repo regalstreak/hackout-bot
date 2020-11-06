@@ -300,9 +300,12 @@ export const processHackers = async (msg: Message): Promise<void> => {
 			msg.channel.send(`Not registered hackers list: ${notRegisteredHackers.length}\n\n`);
 			const notRegisteredHackersString = notRegisteredHackers.join('\n');
 
-			for (let i = 0; i < notRegisteredHackersString.length; i += 2000) {
-				const toSend = notRegisteredHackersString.substring(i, Math.min(notRegisteredHackersString.length, i + 2000));
-				await msg.reply(toSend);
+			for (let i = 0; i < notRegisteredHackersString.length; i += 1000) {
+				const toSend = notRegisteredHackersString.substring(
+					i,
+					Math.min(notRegisteredHackersString.length, i + 1000),
+				);
+				await msg.channel.send(toSend);
 			}
 		}
 	} catch (error) {
