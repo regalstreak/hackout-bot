@@ -27,7 +27,7 @@ export const CHANNELS: TChannels = {
 	REGISTRATION: [
 		{ name: 'register-hackathon', id: '765673553236066344' },
 		{ name: 'admin-bots', id: '764942500627611709' },
-		// { name: 'rds-bots', id: '764467340078874639' },
+		{ name: 'rds-bots', id: '764467340078874639' },
 	],
 	DELETION: [
 		{ name: 'register-hackathon', id: '765673553236066344' },

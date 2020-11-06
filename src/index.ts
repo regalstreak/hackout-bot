@@ -1,6 +1,6 @@
+import { processHackers } from './controllers/processHackers';
 import { purgeTeams } from './controllers/purgeTeams';
 import { isMessageAuthorRoleByName } from './utils/roles';
-import { processHackers } from './controllers/processHackers';
 import { startListeningForMemes, stopListeningForMemes } from './controllers/memes';
 import register from './controllers/register';
 import {

@@ -1,5 +1,5 @@
+import { getMessage } from './../utils/message';
 import { Message, Role, Guild, CategoryChannel, OverwriteResolvable, GuildMember, TextChannel } from 'discord.js';
-import * as request from 'request';
 import { getRoleByName, getRoleById } from './../utils/roles';
 import { IHackerDocument } from './../models/hacker';
 import { ITeam, ITeamDocument } from '../models/team';
@@ -7,6 +7,7 @@ import { ROLES, DEVFOLIO_CSV, getTeamWelcomeMessages } from './../constants/cons
 import * as csvToJson from 'csvtojson';
 import Hacker from '../models/hacker';
 import Team from '../models/team';
+import fetch from 'node-fetch';
 
 interface IHackerCsvRecord {
 	'Team Name': string;
@@ -91,9 +92,13 @@ const createTeam = async (teamName: ITeam['teamName'], guild: Guild): Promise<TC
 		if (existingTeamRole.size > 0) {
 			teamDiscordRole = existingTeamRole.first();
 		} else {
-			teamDiscordRole = await guild.roles.create({
-				data: { name: getTeamRoleName(newTeam.teamIndex, teamName) },
-			});
+			try {
+				teamDiscordRole = await guild.roles.create({
+					data: { name: getTeamRoleName(newTeam.teamIndex, teamName) },
+				});
+			} catch (error) {
+				console.log(error);
+			}
 		}
 		newTeam.discordTeamRoleId = teamDiscordRole.id;
 		const newTeamMongoRecord = await Team.create(newTeam);
@@ -290,36 +295,27 @@ const getHackersFromCsv = async (
 };
 
 export const processHackers = async (msg: Message): Promise<void> => {
-	const hackersCsv: IHackerCsvRecord[] = [];
+	const csvStringResponse = await fetch(getMessage(msg.content));
+	const hackersCsv: IHackerCsvRecord[] = await csvToJson().fromString(await csvStringResponse.text());
 
-	csvToJson()
-		.fromStream(request.get(msg.attachments.first().url))
-		.subscribe(
-			(data) => {
-				hackersCsv.push(data);
-			},
-			(error) => console.log(error),
-			async () => {
-				try {
-					const hackers = await getHackersFromCsv(hackersCsv, msg.guild);
-					let totalTeamMembers = 0;
-					hackers.registered.teams.forEach((t) => {
-						totalTeamMembers = totalTeamMembers + t.members.length + 1;
-					});
-					msg.reply(
-						`Processed ${hackers.registered.individuals.length + 1} individuals\nProcessed ${
-							hackers.registered.teams.length + 1
-						} teams with ${totalTeamMembers} members`,
-					);
-					if (hackers.notRegistered.length > 0) {
-						const notRegisteredHackers = hackers.notRegistered.map((hnr) => {
-							return `${hnr['First Name']} ${hnr['Last Name']} from ${hnr.College}`;
-						});
-						msg.reply(`Not registered hackers list\n\n${notRegisteredHackers}`);
-					}
-				} catch (error) {
-					console.log(error);
-				}
-			},
+	try {
+		const hackers = await getHackersFromCsv(hackersCsv, msg.guild);
+		let totalTeamMembers = 0;
+		hackers.registered.teams.forEach((t) => {
+			totalTeamMembers = totalTeamMembers + t.members.length + 1;
+		});
+		msg.reply(
+			`Processed ${hackers.registered.individuals.length + 1} individuals\nProcessed ${
+				hackers.registered.teams.length + 1
+			} teams with ${totalTeamMembers} members`,
 		);
+		if (hackers.notRegistered.length > 0) {
+			const notRegisteredHackers = hackers.notRegistered.map((hnr) => {
+				return `${hnr['First Name']} ${hnr['Last Name']} from ${hnr.College}`;
+			});
+			msg.reply(`Not registered hackers list\n\n${notRegisteredHackers}`);
+		}
+	} catch (error) {
+		console.log(error);
+	}
 };
