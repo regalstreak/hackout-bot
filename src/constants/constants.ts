@@ -82,5 +82,5 @@ export const DEVFOLIO_CSV = {
 };
 
 export const getTeamWelcomeMessages = (teamRole: string): string => {
-	return `Hey ${teamRole}, welcome to Hackout!\nPlease make sure you send your Devfolio usernames here so the organisers can check you in.\nThis is necessary for your project submissions!`;
+	return `Hey ${teamRole}, welcome to Hackout!`;
 };

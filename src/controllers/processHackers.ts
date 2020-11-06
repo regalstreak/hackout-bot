@@ -71,18 +71,18 @@ const createTeam = async (teamName: ITeam['teamName']): Promise<TCreateTeam> => 
 			return {
 				teamRecord: teamNameRecord,
 			};
+		} else {
+			const newTeam: ITeam = {
+				teamName: teamName,
+				teamIndex: (await Team.countDocuments({}).exec()) + 1,
+			};
+
+			const newTeamMongoRecord = await Team.create(newTeam);
+
+			return {
+				teamRecord: newTeamMongoRecord,
+			};
 		}
-
-		const newTeam: ITeam = {
-			teamName: teamName,
-			teamIndex: (await Team.countDocuments({}).exec()) + 1,
-		};
-
-		const newTeamMongoRecord = await Team.create(newTeam);
-
-		return {
-			teamRecord: newTeamMongoRecord,
-		};
 	} catch (error) {
 		console.log('createTeamerror', error);
 	}
@@ -227,9 +227,13 @@ const getHackersFromCsv = async (
 				}
 				await hackerEmailRecord.updateOne({ devfolioTeamName: hackerCsv['Team Name'], accepted: true }).exec();
 				hackerCsv.discordId = hackerEmailRecord.discordId;
-				hackerDiscord = guild.members.cache.get(hackerCsv.discordId);
-				hackerDiscord.roles.remove(getRoleByName(guild, ROLES.HACKER_UNDER_REVIEW));
-				hackerDiscord.roles.add(getRoleByName(guild, ROLES.HACKER_ACCEPTED));
+				hackerDiscord = await guild.members.fetch(hackerEmailRecord.discordId);
+				try {
+					await hackerDiscord.roles.remove(getRoleByName(guild, ROLES.HACKER_UNDER_REVIEW));
+					await hackerDiscord.roles.add(getRoleByName(guild, ROLES.HACKER_ACCEPTED));
+				} catch (error) {
+					console.log(error);
+				}
 			}
 
 			if (hackerCsv['Team Name'] === DEVFOLIO_CSV.NO_TEAM) {
@@ -247,18 +251,6 @@ const getHackersFromCsv = async (
 				if (teamIndex >= 0) {
 					hackersJson.registered.teams[teamIndex].members.push(hackerCsv);
 				} else {
-					try {
-						guild.roles
-							.create({
-								data: {
-									name: getTeamRoleName(teamIndex, hackerCsv['Team Name']),
-								},
-							})
-							.then(console.log)
-							.catch(console.error);
-					} catch (error) {
-						console.log('rolecreationerror');
-					}
 					await createTeamsChannel(guild, team);
 					hackersJson.registered.teams.push({
 						teamName: hackerCsv['Team Name'],
