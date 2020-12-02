@@ -98,17 +98,30 @@ export const REPLIES = {
 	UNREGISTER_FAIL: `You have not registered on ${HACKATHON_NAME} Discord, please register on Discord with the following format:${REGISTRATION_FORMAT}`,
 };
 
+// DSC WOW
 export const ROLES = {
 	EVERYONE: '@everyone',
 	HACKER_UNDER_REVIEW: 'Hacker 2020 (Under Review)',
 	HACKER_ACCEPTED: 'Hacker 2020',
-	CONFERENCE: 'Conference 2020',
-	ORGANISER: 'Organiser',
-	ADMIN: 'Server Admin',
-	MENTOR: 'Mentor',
-	SPEAKER: 'Speaker',
+	// CONFERENCE: 'Conference 2020',
+	ORGANISER: 'Co-organizers',
+	ADMIN: 'Discord Handler',
+	MENTOR: 'Mentors',
+	SPEAKER: 'Judge',
 	FINDING_TEAMS: 'Finding Teams',
 };
+// Hackout
+// export const ROLES = {
+// 	EVERYONE: '@everyone',
+// 	HACKER_UNDER_REVIEW: 'Hacker 2020 (Under Review)',
+// 	HACKER_ACCEPTED: 'Hacker 2020',
+// 	CONFERENCE: 'Conference 2020',
+// 	ORGANISER: 'Organiser',
+// 	ADMIN: 'Server Admin',
+// 	MENTOR: 'Mentor',
+// 	SPEAKER: 'Speaker',
+// 	FINDING_TEAMS: 'Finding Teams',
+// };
 
 export const DEVFOLIO_CSV = {
 	NO_TEAM: 'N/A',
