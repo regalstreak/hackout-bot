@@ -5,7 +5,7 @@ export const getRoleByName = (guild: Guild, roleName: string): Role => {
 };
 
 export const isMessageAuthorRoleByName = (roleName: string, msg: Message): boolean => {
-	const role = getRoleByName(msg.guild, roleName).id;
+	const role = getRoleByName(msg.guild, roleName)?.id;
 	return msg.member.roles.cache.has(role);
 };
 
