@@ -68,7 +68,7 @@ const register = async (msg: Message): Promise<void> => {
 				msg.member.setNickname(name);
 
 				msg.member.roles.add(getRoleByName(msg.guild, ROLES.HACKER_UNDER_REVIEW));
-				msg.member.roles.add(getRoleByName(msg.guild, ROLES.CONFERENCE));
+				// msg.member.roles.add(getRoleByName(msg.guild, ROLES.CONFERENCE));
 
 				await sendLogToChannel(msg, createdHacker, 'registered');
 			}
