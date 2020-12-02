@@ -87,13 +87,15 @@ export const REGISTRATION_FORMAT = `\n**${COMMANDS.REGISTER} Full Name email@dom
 
 export const MESSAGE_DELETE_TIMEOUT = 2000;
 
+export const HACKATHON_NAME = 'Code Off Duty';
+
 export const REPLIES = {
 	DELETE_TIMEOUT: 5000,
 	WRONG_EMAIL: `The email you entered is invalid, please try again with the following format:${REGISTRATION_FORMAT}`,
-	REGISTER_ALREADY_EXISTS: "You're already registered on Hackout Discord as:",
-	REGISTER_SUCCESS: 'Thank you for registering on Hackout Discord! Your details are:',
-	UNREGISTER_SUCCESS: 'You have unregistered on Hackout Discord with your details:',
-	UNREGISTER_FAIL: `You have not registered on Hackout Discord, please register on Discord with the following format:${REGISTRATION_FORMAT}`,
+	REGISTER_ALREADY_EXISTS: `You're already registered on ${HACKATHON_NAME} Discord as:`,
+	REGISTER_SUCCESS: `Thank you for registering on ${HACKATHON_NAME} Discord! Your details are:`,
+	UNREGISTER_SUCCESS: `You have unregistered on ${HACKATHON_NAME} Discord with your details:`,
+	UNREGISTER_FAIL: `You have not registered on ${HACKATHON_NAME} Discord, please register on Discord with the following format:${REGISTRATION_FORMAT}`,
 };
 
 export const ROLES = {
@@ -113,5 +115,5 @@ export const DEVFOLIO_CSV = {
 };
 
 export const getTeamWelcomeMessages = (teamRole: string): string => {
-	return `Hey ${teamRole}, welcome to Hackout!`;
+	return `Hey ${teamRole}, welcome to ${HACKATHON_NAME}!`;
 };
