@@ -22,30 +22,30 @@ type TChannels = {
 	MEMES: TChannel[];
 };
 
-// DSC WOW
+// HaXplore 2.0
 // rds = dev server channels, not needed on prod, only used for development
 export const CHANNELS: TChannels = {
 	REGISTRATION: [
-		{ name: 'register-for-hackathon', id: '783777146807648256' },
-		{ name: 'codeoffduty-bot', id: '783776118469558292' },
+		{ name: 'register-for-hackathon', id: '824989242362822706' },
+		{ name: 'bots', id: '824975675013595136' },
 		{ name: 'rds-bots', id: '764467340078874639' },
 	],
 	DELETION: [
-		{ name: 'register-for-hackathon', id: '783777146807648256' },
+		{ name: 'register-for-hackathon', id: '824989242362822706' },
 		// { name: 'rds-bots', id: '764467340078874639' },
 	],
 	LOGGER: [
 		{
-			name: 'discord-hackathon-registration',
-			id: '783777370746257449',
+			name: 'registration-logger',
+			id: '824988589511016509',
 		},
 		// { name: 'rds-register-logger', id: '768476901806833694' },
 	],
 	MEMES: [
-		{
-			name: 'memes',
-			id: '781575044702273577',
-		},
+		// {
+		// name: 'memes',
+		// id: '781575044702273577',
+		// },
 		// {
 		// 	name: 'rds-memes',
 		// 	id: '772218204826894337',
@@ -87,7 +87,7 @@ export const REGISTRATION_FORMAT = `\n**${COMMANDS.REGISTER} Full Name email@dom
 
 export const MESSAGE_DELETE_TIMEOUT = 2000;
 
-export const HACKATHON_NAME = 'Code Off Duty';
+export const HACKATHON_NAME = 'HaXplore 2.0';
 
 export const REPLIES = {
 	DELETE_TIMEOUT: 5000,
@@ -98,18 +98,19 @@ export const REPLIES = {
 	UNREGISTER_FAIL: `You have not registered on ${HACKATHON_NAME} Discord, please register on Discord with the following format:${REGISTRATION_FORMAT}`,
 };
 
-// DSC WOW
+// HaXplore 2.0
 export const ROLES = {
 	EVERYONE: '@everyone',
-	HACKER_UNDER_REVIEW: 'Hacker 2020 (Under Review)',
-	HACKER_ACCEPTED: 'Hacker 2020',
+	HACKER_UNDER_REVIEW: 'Hacker 2021 (Under Review)',
+	HACKER_ACCEPTED: 'Hacker 2021',
 	// CONFERENCE: 'Conference 2020',
-	ORGANISER: 'Co-organizers',
-	ADMIN: 'Discord Handler',
-	MENTOR: 'Mentors',
+	ORGANISER: 'Organizer',
+	ADMIN: 'Botmaster',
+	MENTOR: 'Mentor',
 	SPEAKER: 'Judge',
-	FINDING_TEAMS: 'Finding Teams',
+	FINDING_TEAMS: 'Solo Team',
 };
+
 // Hackout
 // export const ROLES = {
 // 	EVERYONE: '@everyone',
