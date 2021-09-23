@@ -23,38 +23,38 @@ type TChannels = {
 };
 
 // Hackout
-// export const CHANNELS: TChannels = {
-// 	REGISTRATION: [
-// 		{ name: 'register-hackathon', id: '765673553236066344' },
-// 		{ name: 'admin-bots', id: '764942500627611709' },
-// 	],
-// 	DELETION: [{ name: 'register-hackathon', id: '765673553236066344' }],
-// 	LOGGER: [
-// 		{
-// 			name: 'discord-register-logger',
-// 			id: '768465256699265054',
-// 		},
-// 	],
-// 	MEMES: [
-// 		{
-// 			name: 'memes',
-// 			id: '764985789607575633',
-// 		},
-// 	],
-// };
-
-// RDS
 export const CHANNELS: TChannels = {
-	REGISTRATION: [{ name: 'rds-bots', id: '764467340078874639' }],
-	DELETION: [{ name: 'rds-bots', id: '764467340078874639' }],
-	LOGGER: [{ name: 'rds-register-logger', id: '768476901806833694' }],
+	REGISTRATION: [
+		{ name: 'register-hackathon', id: '765673553236066344' },
+		{ name: 'admin-bots', id: '764942500627611709' },
+	],
+	DELETION: [{ name: 'register-hackathon', id: '765673553236066344' }],
+	LOGGER: [
+		{
+			name: 'discord-register-logger',
+			id: '768465256699265054',
+		},
+	],
 	MEMES: [
 		{
-			name: 'rds-memes',
-			id: '772218204826894337',
+			name: 'memes',
+			id: '764985789607575633',
 		},
 	],
 };
+
+// RDS
+// export const CHANNELS: TChannels = {
+// 	REGISTRATION: [{ name: 'rds-bots', id: '764467340078874639' }],
+// 	DELETION: [{ name: 'rds-bots', id: '764467340078874639' }],
+// 	LOGGER: [{ name: 'rds-register-logger', id: '768476901806833694' }],
+// 	MEMES: [
+// 		{
+// 			name: 'rds-memes',
+// 			id: '772218204826894337',
+// 		},
+// 	],
+// };
 
 export const REGISTRATION_FORMAT = `\n**${COMMANDS.REGISTER} Full Name email@domain.com**`;
 
