@@ -60,7 +60,7 @@ export const REGISTRATION_FORMAT = `\n**${COMMANDS.REGISTER} Full Name email@dom
 
 export const MESSAGE_DELETE_TIMEOUT = 2000;
 
-export const HACKATHON_NAME = 'HaXplore 2.0';
+export const HACKATHON_NAME = 'Hackout';
 
 export const REPLIES = {
 	DELETE_TIMEOUT: 5000,
@@ -74,9 +74,9 @@ export const REPLIES = {
 // Hackout
 export const ROLES = {
 	EVERYONE: '@everyone',
-	HACKER_UNDER_REVIEW: 'Hacker 2020 (Under Review)',
-	HACKER_ACCEPTED: 'Hacker 2020',
-	CONFERENCE: 'Conference 2020',
+	HACKER_UNDER_REVIEW: 'Hacker 2021 (Under Review)',
+	HACKER_ACCEPTED: 'Hacker 2021',
+	CONFERENCE: 'Conference 2021',
 	ORGANISER: 'Organiser',
 	ADMIN: 'Server Admin',
 	MENTOR: 'Mentor',
